@@ -1,0 +1,20 @@
+# Lab Solution Variables
+
+openshift_master: 
+
+# Projects
+project_suffix: 
+dev_project: dev{{project_suffix}}
+prod_project: prod{{project_suffix}}
+infra_project: lab-infra
+
+# GitHub 
+github_account: openshift-labs
+github_ref: master
+
+# Gogs
+gogs_hostname: 
+gogs_admin_user: gogs
+gogs_admin_password: openshift
+gogs_user: developer
+gogs_password: openshift

@@ -1,0 +1,19 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: catalog-build
+spec:
+  runPolicy: Serial
+  source:
+    git:
+      ref: master
+      uri: "http://{{ gogs_hostname }}/{{ gogs_user }}/catalog.git"
+    type: Git
+  strategy:
+    jenkinsPipelineStrategy:
+      jenkinsfilePath: Jenkinsfile
+    type: JenkinsPipeline
+  triggers:
+    - generic:
+        secret: 4LXwMdx9vhQY4WXbLcFR
+      type: Generic
