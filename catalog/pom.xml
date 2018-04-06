@@ -37,6 +37,30 @@
         <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
         <netflix.feign.version>8.15.1</netflix.feign.version>
     </properties>
+	<repositories>
+		<repository>
+			<id>jboss-enterprise-maven-repository</id>
+			<url>https://maven.repository.redhat.com/ga/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>jboss-enterprise-maven-repository</id>
+			<url>https://maven.repository.redhat.com/ga/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
     <dependencyManagement>
         <dependencies>
             <dependency>
