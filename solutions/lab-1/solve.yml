@@ -110,11 +110,16 @@
     - name: process build pipeline template
       template:
         src: pipeline.yml.j2
-        dest: "{{ git_dir.path }}/pipelne.yml"
+        dest: "{{ git_dir.path }}/pipeline.yml"
 
     - name: create build pipeline
-      shell: "oc create -f {{ git_dir.path }}/pipelne.yml -n {{ dev_project}}"
+      shell: "oc create -f {{ git_dir.path }}/pipeline.yml -n {{ dev_project}}"
       ignore_errors: true
+
+    - name: extract webhook secret
+      shell: |
+        oc get bc catalog-build -o=jsonpath='{.spec.triggers[?(@.type=="Generic")].generic.secret}' -n {{ dev_project}}
+      register: webhook_secret_result
 
     - name: create webhook
       uri:
@@ -124,7 +129,7 @@
           {
             "type": "gogs",
             "config": {
-              "url": "{{ openshift_master }}/oapi/v1/namespaces/{{ dev_project }}/buildconfigs/catalog-build/webhooks/4LXwMdx9vhQY4WXbLcFR/generic",
+              "url": "{{ openshift_master }}/oapi/v1/namespaces/{{ dev_project }}/buildconfigs/catalog-build/webhooks/{{ webhook_secret_result.stdout }}/generic",
               "content_type": "json"
             },
             "events": [
