@@ -163,7 +163,7 @@ objects:
     template:
       metadata:
         labels:
-          app: inventory
+          app: ${SERVICE_NAME}
           deploymentconfig: ${SERVICE_NAME}
       spec:
         containers:
