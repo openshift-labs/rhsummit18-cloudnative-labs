@@ -1,0 +1,211 @@
+apiVersion: v1
+kind: Template
+metadata:
+  annotations:
+    description: CoolStore Microservices - Inventory Template
+    tags: microservice,nginx
+  name: inventory
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ${SERVICE_NAME}
+    name: ${SERVICE_NAME}
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/tqvarnst/openshift-nginx:latest
+      name: latest
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ${SERVICE_NAME}
+    name: ${SERVICE_NAME}
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: ${SERVICE_NAME}
+      deploymentconfig: ${SERVICE_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: ${SERVICE_NAME}-html
+    labels:
+      app: ${SERVICE_NAME}
+      component: ${SERVICE_NAME}
+  data:
+    329299.json: |-
+      {
+        "itemId":"329299",
+        "quantity":78
+      }
+    329199.json: |-
+      {
+        "itemId":"329199",
+        "quantity":123
+      }
+    165613.json: |-
+      {
+        "itemId":"165613",
+        "quantity":303
+      }
+    165614.json: |-
+      {
+        "itemId":"165614",
+        "quantity":54
+      }
+    165954.json: |-
+      {
+        "itemId":"165954",
+        "quantity":407
+      }
+    444434.json: |-
+      {
+        "itemId":"444434",
+        "quantity":343
+      }
+    444435.json: |-
+      {
+        "itemId":"444435",
+        "quantity":85
+      }
+    444436.json: |-
+      {
+        "itemId":"444436",
+        "quantity":245
+      }
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: ${SERVICE_NAME}-config
+    labels:
+      app: ${SERVICE_NAME}
+      component: ${SERVICE_NAME}
+  data:
+    default.conf: |-
+      server {
+        listen       8080;
+        server_name  localhost;
+    
+        #charset koi8-r;
+        #access_log  /var/log/nginx/host.access.log  main;
+        location /services {
+            rewrite ^/services/inventory/(.*)$ /$1.json break;
+            return  404;
+            root   /usr/share/nginx/html/inventory;
+        }
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+    
+        #error_page  404              /404.html;
+    
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+    
+        # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+        #
+        #location ~ \.php$ {
+        #    proxy_pass   http://127.0.0.1;
+        #}
+    
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+        #location ~ \.php$ {
+        #    root           html;
+        #    fastcgi_pass   127.0.0.1:9000;
+        #    fastcgi_index  index.php;
+        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+        #    include        fastcgi_params;
+        #}
+    
+        # deny access to .htaccess files, if Apache's document root
+        # concurs with nginx's one
+        #
+        #location ~ /\.ht {
+        #    deny  all;
+        #}
+      }
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${SERVICE_NAME}
+    name: ${SERVICE_NAME}
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: ${SERVICE_NAME}
+    strategy:
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: inventory
+          deploymentconfig: ${SERVICE_NAME}
+      spec:
+        containers:
+        - image: ' '
+          imagePullPolicy: IfNotPresent
+          name: ${SERVICE_NAME}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: volume-inventory-config
+            - mountPath: /usr/share/nginx/html/inventory
+              name: volume-inventory-html
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+          - configMap:
+              defaultMode: 420
+              name: inventory-config
+            name: volume-inventory-config
+          - configMap:
+              defaultMode: 420
+              name: inventory-html
+            name: volume-inventory-html
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${SERVICE_NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${SERVICE_NAME}:latest
+      type: ImageChange
+parameters:
+  - displayName: Sonatype Nexus Service Name
+    name: SERVICE_NAME
+    required: true
+    value: inventory
