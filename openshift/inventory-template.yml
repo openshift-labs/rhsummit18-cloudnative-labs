@@ -208,18 +208,18 @@ objects:
   kind: Route
   metadata:
     labels:
-      app: inventory
-    name: inventory
+      app: ${SERVICE_NAME}
+    name: ${SERVICE_NAME}
   spec:
     port:
       targetPort: 8080-tcp
     to:
       kind: Service
-      name: inventory
+      name: ${SERVICE_NAME}
       weight: 100
     wildcardPolicy: None
 parameters:
   - displayName: Sonatype Nexus Service Name
     name: SERVICE_NAME
     required: true
-    value: inventory
+    value: ${SERVICE_NAME}
