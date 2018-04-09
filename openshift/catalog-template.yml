@@ -74,7 +74,10 @@ objects:
         name: catalog
       spec:
         containers:
-        - image: catalog
+        - env:
+            - name: JAVA_ARGS
+              value: '--spring.config.location=/app-config/application.properties'
+          image: catalog
           imagePullPolicy: Always
           name: catalog
           ports:
@@ -112,10 +115,18 @@ objects:
               cpu: 100m
               memory: 256Mi
           terminationMessagePath: /dev/termination-log
+          volumeMounts:
+            - mountPath: /app-config/
+              name: volume-app-config
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         securityContext: {}
         terminationGracePeriodSeconds: 75
+        volumes:
+          - configMap:
+              defaultMode: 420
+              name: catalog
+            name: volume-app-config
     triggers:
     - imageChangeParams:
         automatic: true
