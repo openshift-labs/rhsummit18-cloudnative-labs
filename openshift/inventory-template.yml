@@ -204,6 +204,20 @@ objects:
           kind: ImageStreamTag
           name: ${SERVICE_NAME}:latest
       type: ImageChange
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: inventory
+    name: inventory
+  spec:
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: inventory
+      weight: 100
+    wildcardPolicy: None
 parameters:
   - displayName: Sonatype Nexus Service Name
     name: SERVICE_NAME
