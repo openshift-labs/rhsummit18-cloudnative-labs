@@ -82,6 +82,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <!-- add additional dependencies -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- Testing -->
         <dependency>
@@ -116,19 +121,6 @@
         </resources>
     </build>
     <profiles>
-        <profile>
-            <id>local</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-            </dependencies>
-        </profile>
         <profile>
             <id>openshift</id>
             <dependencies>
