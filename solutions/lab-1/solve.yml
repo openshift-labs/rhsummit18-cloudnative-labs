@@ -45,10 +45,16 @@
       args:
         chdir: "{{ git_dir.path }}/catalog"
 
+
+
     - name: process build pipeline template
       template:
         src: pipeline.yml.j2
         dest: "{{ git_dir.path }}/pipeline.yml"
+
+    - name: disable deployment triggers
+      shell: "oc set triggers dc/catalog --manual -n {{ dev_project}}"
+      ignore_errors: true
 
     - name: create build pipeline
       shell: "oc create -f {{ git_dir.path }}/pipeline.yml -n {{ dev_project}}"
