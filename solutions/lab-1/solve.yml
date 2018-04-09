@@ -11,92 +11,31 @@
       shell: "oc new-project {{ dev_project }} --display-name='Catalog DEV'"
       ignore_errors: true
 
-    - name: check if user '{{ gogs_user }}' exists
-      uri:
-        url: http://{{ gogs_hostname }}/api/v1/users/{{ gogs_user }}
-        user: "{{ gogs_admin_user }}"
-        password: "{{ gogs_admin_password }}"
-        force_basic_auth: true
-        status_code: 200,404
-      register: user_result
-
-    - name: create gogs user '{{ gogs_user }}'
-      uri:
-        url: http://{{ gogs_hostname }}/api/v1/admin/users
-        method: POST
-        body: "{'login_name': '{{ gogs_user }}', 'username': '{{ gogs_user }}', 'email': '{{ gogs_user }}@gogs.com', 'password': '{{ gogs_password }}'}"
-        body_format: json
-        user: "{{ gogs_admin_user }}"
-        password: "{{ gogs_admin_password }}"
-        status_code: 200,201
-        force_basic_auth: true
-      when: user_result.status != 200
-
-    - name: check if catalog git repository exists
-      uri:
-        url: http://{{ gogs_hostname }}/api/v1/repos/{{ gogs_user }}/catalog
-        user: "{{ gogs_user }}"
-        password: "{{ gogs_password }}"
-        force_basic_auth: true
-        status_code: 200,404
-      register: repo_result
-
-    - name: create catalog git repository
-      uri:
-        url: http://{{ gogs_hostname }}/api/v1/user/repos
-        method: POST
-        body: '{"name": "catalog", "private": false}'
-        body_format: json
-        user: "{{ gogs_user }}"
-        password: "{{ gogs_password }}"
-        status_code: 200,201
-        force_basic_auth: true
-      when: repo_result.status != 200
-
-    - name: create temporary git directory
-      tempfile:
-        state: directory
-        prefix: projects-git
-      register: git_dir
-      when: repo_result.status != 200
-
-    - name: unarchive projects source archive
-      unarchive:
-        remote_src: yes
-        src: "https://github.com/{{ github_account }}/rhsummit18-cloudnative-labs/archive/{{ github_ref }}.zip"
-        dest: "{{ git_dir.path }}"
-      when: repo_result.status != 200
-
-    - name: push catalog to git repository in Gogs
-      shell: |
-        git init
-        git remote add origin http://{{ gogs_user }}:{{ gogs_password }}@{{ gogs_hostname }}/{{ gogs_user }}/catalog.git
-        git add . --all
-        git config user.email "rhdeveloper@redhat.com"
-        git config user.name "rh-developer"
-        git commit -m "Initial add"
-        git push origin master
-      args:
-        chdir: "{{ git_dir.path }}/rhsummit18-cloudnative-labs-{{ github_ref }}/catalog"
-      when: repo_result.status != 200
-
     - name: deploy catalog in {{ dev_project }}
       shell: |
         oc new-app -f https://raw.githubusercontent.com/{{ github_account }}/rhsummit18-cloudnative-labs/{{ github_ref }}/openshift/catalog-template.yml \
-              --param=GIT_URI=http://{{ gogs_hostname }}/{{ gogs_user }}/catalog.git \
-              --param=MAVEN_MIRROR_URL=http://nexus.{{ infra_project }}.svc:8081/repository/maven-all-public/ \
-              -n {{ dev_project }}
+            --param=GIT_URI=http://{{ gogs_hostname }}/{{ gogs_user }}/catalog.git -n {{ dev_project }}
       ignore_errors: true
 
     - name: deploy jenkins in {{ dev_project }}
       shell: "oc new-app jenkins-persistent -n {{ dev_project }}"
       ignore_errors: true
 
+    - name: create temporary git directory
+      tempfile:
+        state: directory
+        prefix: catalog-git
+      register: git_dir
+
+    - name: clone catalog git repository to {{ git_dir.path }}
+      shell: "git clone http://{{ gogs_user }}:{{ gogs_password }}@{{ gogs_hostname }}/{{ gogs_user }}/catalog.git"
+      args:
+        chdir: "{{ git_dir.path }}"
+
     - name: create jenkinsfile
       copy:
         src: Jenkinsfile
-        dest: "{{ git_dir.path }}/rhsummit18-cloudnative-labs-{{ github_ref }}/catalog/Jenkinsfile"
-      when: repo_result.status != 200
+        dest: "{{ git_dir.path }}/catalog/Jenkinsfile"
 
     - name: push jenkinsfile to catalog git repository
       shell: |
@@ -104,13 +43,18 @@
         git commit -m "dev pipeline added"
         git push origin master
       args:
-        chdir: "{{ git_dir.path }}/rhsummit18-cloudnative-labs-{{ github_ref }}/catalog"
-      when: repo_result.status != 200
+        chdir: "{{ git_dir.path }}/catalog"
+
+
 
     - name: process build pipeline template
       template:
         src: pipeline.yml.j2
         dest: "{{ git_dir.path }}/pipeline.yml"
+
+    - name: disable deployment triggers
+      shell: "oc set triggers dc/catalog --manual -n {{ dev_project}}"
+      ignore_errors: true
 
     - name: create build pipeline
       shell: "oc create -f {{ git_dir.path }}/pipeline.yml -n {{ dev_project}}"

@@ -17,9 +17,6 @@ public class CatalogService {
     @Autowired
     InventoryClient inventoryClient;
 
-    @Autowired
-    StoreConfig storeConfig;
-
     public Product read(String id) {
         Product product = repository.findById(id);
         product.setQuantity(inventoryClient.getInventoryStatus(product.getItemId()).getQuantity());
@@ -28,7 +25,6 @@ public class CatalogService {
 
     public List<Product> readAll() {
         List<Product> productList = repository.readAll();
-        productList.removeIf(p -> storeConfig.isRecalled(p.getItemId()));
         productList.parallelStream()
                 .forEach(p -> {
                     p.setQuantity(inventoryClient.getInventoryStatus(p.getItemId()).getQuantity());
