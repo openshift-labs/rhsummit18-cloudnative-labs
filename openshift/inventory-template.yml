@@ -222,4 +222,4 @@ parameters:
   - displayName: Sonatype Nexus Service Name
     name: SERVICE_NAME
     required: true
-    value: ${SERVICE_NAME}
+    value: inventory
