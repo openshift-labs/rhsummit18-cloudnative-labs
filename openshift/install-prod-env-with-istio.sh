@@ -54,7 +54,7 @@ function install_istio() {
 oc get clusterrolebindings >& /dev/null || fail "you do not appear to be logged in as a cluster-admin"
 
 # install istio if it hasn't been installed get
-oc get route istio-ingress -n istio-system || install_istio
+oc get route istio-ingress -n istio-system  >& /dev/null || install_istio
 
 # workaround for https://github.com/istio/issues/issues/34
 setenforce 0 >& /dev/null || echo "no setenforce found; ignoring"
@@ -78,6 +78,11 @@ oc process -f $REPO_HOME/openshift/inventory-template.yml | oc apply -f -
 # deploy inventory v1
 oc process -f $REPO_HOME/openshift/inventory-deployment-template.yml \
   SERVICE_VERSION=v1 \
+  | istioctl kube-inject -f - | oc apply -f -
+
+# deploy inventory v2
+oc process -f $REPO_HOME/openshift/inventory-deployment-template.yml \
+  SERVICE_VERSION=v2 \
   | istioctl kube-inject -f - | oc apply -f -
 
 # deploy web

@@ -71,6 +71,7 @@ objects:
           app: catalog
           component: catalog
           deploymentconfig: catalog
+          version: v1
         name: catalog
       spec:
         containers:
