@@ -12,7 +12,7 @@ objects:
   metadata:
     name: catalog
     labels:
-      app: coolstore
+      app: catalog
       component: catalog
   spec:
     tags:
@@ -22,7 +22,7 @@ objects:
   metadata:
     name: catalog
     labels:
-      app: coolstore
+      app: catalog
       component: catalog
   spec:
     output:
@@ -54,12 +54,12 @@ objects:
   metadata:
     name: catalog
     labels:
-      app: coolstore
+      app: catalog
       component: catalog
   spec:
     replicas: 1
     selector:
-      app: coolstore
+      app: catalog
       component: catalog
       deploymentconfig: catalog
     strategy:
@@ -68,7 +68,7 @@ objects:
     template:
       metadata:
         labels:
-          app: coolstore
+          app: catalog
           component: catalog
           deploymentconfig: catalog
         name: catalog
@@ -130,7 +130,7 @@ objects:
   kind: Service
   metadata:
     labels:
-      app: coolstore
+      app: catalog
       component: catalog
     name: catalog
   spec:
@@ -145,7 +145,7 @@ objects:
   kind: Route
   metadata:
     labels:
-      app: coolstore
+      app: catalog
       component: catalog
     name: catalog
   spec:
@@ -158,10 +158,11 @@ objects:
   metadata:
     name: catalog
     labels:
-      app: coolstore
+      app: catalog
       component: catalog
   data:
     application.properties: |-
+      server.port=8080
       spring.datasource.url=jdbc:postgresql://catalog-postgresql:5432/catalog
       spring.datasource.username=${DB_USERNAME}
       spring.datasource.password=${DB_PASSWORD}
@@ -173,7 +174,7 @@ objects:
   metadata:
     name: catalog-postgresql
     labels:
-      app: coolstore
+      app: catalog-postgresql
       component: catalog
   spec:
     replicas: 1
@@ -184,7 +185,7 @@ objects:
     template:
       metadata:
         labels:
-          app: coolstore
+          app: catalog-postgresql
           component: catalog
           deploymentconfig: catalog-postgresql
         name: catalog-postgresql
@@ -241,7 +242,7 @@ objects:
     annotations:
       template.openshift.io/expose-uri: mysql://{.spec.clusterIP}:{.spec.ports[?(.name=="postgresql")].port}
     labels:
-      app: coolstore
+      app: catalog-postgresql
       component: catalog
     name: catalog-postgresql
   spec:
