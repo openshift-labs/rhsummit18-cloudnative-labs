@@ -7,18 +7,6 @@ metadata:
   name: inventory
 objects:
 - apiVersion: v1
-  kind: ImageStream
-  metadata:
-    labels:
-      app: ${SERVICE_NAME}
-    name: ${SERVICE_NAME}
-  spec:
-    tags:
-    - from:
-        kind: DockerImage
-        name: docker.io/tqvarnst/openshift-nginx:latest
-      name: latest
-- apiVersion: v1
   kind: Service
   metadata:
     labels:
@@ -26,13 +14,12 @@ objects:
     name: ${SERVICE_NAME}
   spec:
     ports:
-    - name: 8080-tcp
+    - name: http
       port: 8080
       protocol: TCP
-      targetPort: 8080
+      targetPort: http
     selector:
       app: ${SERVICE_NAME}
-      deploymentconfig: ${SERVICE_NAME}
     sessionAffinity: None
     type: ClusterIP
 - apiVersion: v1
@@ -142,69 +129,6 @@ objects:
         #}
       }
 - apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    labels:
-      app: ${SERVICE_NAME}
-    name: ${SERVICE_NAME}
-  spec:
-    replicas: 1
-    selector:
-      deploymentconfig: ${SERVICE_NAME}
-    strategy:
-      resources: {}
-      rollingParams:
-        intervalSeconds: 1
-        maxSurge: 25%
-        maxUnavailable: 25%
-        timeoutSeconds: 600
-        updatePeriodSeconds: 1
-      type: Rolling
-    template:
-      metadata:
-        labels:
-          app: ${SERVICE_NAME}
-          deploymentconfig: ${SERVICE_NAME}
-      spec:
-        containers:
-        - image: ' '
-          imagePullPolicy: IfNotPresent
-          name: ${SERVICE_NAME}
-          ports:
-          - containerPort: 8080
-            protocol: TCP
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /etc/nginx/conf.d
-              name: volume-inventory-config
-            - mountPath: /usr/share/nginx/html/inventory
-              name: volume-inventory-html
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
-        terminationGracePeriodSeconds: 30
-        volumes:
-          - configMap:
-              defaultMode: 420
-              name: inventory-config
-            name: volume-inventory-config
-          - configMap:
-              defaultMode: 420
-              name: inventory-html
-            name: volume-inventory-html
-    test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${SERVICE_NAME}
-        from:
-          kind: ImageStreamTag
-          name: ${SERVICE_NAME}:latest
-      type: ImageChange
-- apiVersion: v1
   kind: Route
   metadata:
     labels:
@@ -212,14 +136,14 @@ objects:
     name: ${SERVICE_NAME}
   spec:
     port:
-      targetPort: 8080-tcp
+      targetPort: http
     to:
       kind: Service
       name: ${SERVICE_NAME}
       weight: 100
     wildcardPolicy: None
 parameters:
-  - displayName: Sonatype Nexus Service Name
+  - displayName: Service Name
     name: SERVICE_NAME
     required: true
     value: inventory
