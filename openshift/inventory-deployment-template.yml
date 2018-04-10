@@ -28,7 +28,7 @@ objects:
           deploymentconfig: ${SERVICE_NAME}
       spec:
         containers:
-        - image: docker.io/tqvarnst/openshift-nginx:latest
+        - image: centos/nginx-16-centos7:latest
           imagePullPolicy: IfNotPresent
           name: ${SERVICE_NAME}
           ports:
@@ -39,9 +39,9 @@ objects:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
-            - mountPath: /etc/nginx/conf.d
+            - mountPath: /opt/rh/nginx16/root/etc/nginx/conf.d/
               name: volume-inventory-config
-            - mountPath: /usr/share/nginx/html/inventory
+            - mountPath: /opt/rh/nginx16/root/usr/share/nginx/html/inventory
               name: volume-inventory-html
         dnsPolicy: ClusterFirst
         restartPolicy: Always

@@ -86,13 +86,13 @@ objects:
         #charset koi8-r;
         #access_log  /var/log/nginx/host.access.log  main;
         location /services {
-            rewrite ^/services/inventory/(.*)$ /$1.json break;
+            rewrite ^/services/inventory/(.*)$ /inventory/$1.json break;
             return  404;
-            root   /usr/share/nginx/html/inventory;
+            #root   /usr/share/nginx/html/inventory;
         }
 
         location / {
-            root   /usr/share/nginx/html;
+            #root   /usr/share/nginx/html;
             index  index.html index.htm;
         }
     
@@ -100,9 +100,9 @@ objects:
     
         # redirect server error pages to the static page /50x.html
         #
-        error_page   500 502 503 504  /50x.html;
+        #error_page   500 502 503 504  /50x.html;
         location = /50x.html {
-            root   /usr/share/nginx/html;
+            #root   /usr/share/nginx/html;
         }
     
         # proxy the PHP scripts to Apache listening on 127.0.0.1:80
