@@ -1,13 +1,22 @@
+env:
+  global:
+  - INVENTORY_IMAGE_REPO=siamaksade/rhsummit-coolstore-inventory
+  - WEB_IMAGE_REPO=siamaksade/rhsummit-coolstore-inventory
+
+services:
+  - docker
+
 language: java
 
 jdk:
   - oraclejdk8
 
 before_install:
+#  - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - cp .travis.settings.xml $HOME/.m2/settings.xml
-
-env:
-  - BUILD_CMD="mvn -f catalog package"
+  - curl -o $HOME/s2i.tar.gz https://github.com/openshift/source-to-image/releases/download/v1.1.9/source-to-image-v1.1.9-db2b4645-linux-amd64.tar.gz 
+  - tar -C ${HOME}/bin $HOME/s2i.tar.gz
 
 script:
-  - $BUILD_CMD
+  - mvn -f catalog package
+  - ${HOME}/bin/s2i build ./inventory centos/nginx-112-centos7 inventory
