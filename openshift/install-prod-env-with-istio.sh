@@ -73,16 +73,17 @@ oc process -f $REPO_HOME/openshift/catalog-template.yml \
   | istioctl kube-inject -f - | oc apply -f -
 
 # deploy inventory infra (does not include deployment so no istio needed)
-oc process -f $REPO_HOME/openshift/inventory-template.yml | oc apply -f -
+oc process -f $REPO_HOME/openshift/inventory-svc-template.yml | oc apply -f -
 
 # deploy inventory v1
 oc process -f $REPO_HOME/openshift/inventory-deployment-template.yml \
   SERVICE_VERSION=v1 \
   | istioctl kube-inject -f - | oc apply -f -
 
-# deploy inventory v2
+# deploy inventory v2 with built-in delay
 oc process -f $REPO_HOME/openshift/inventory-deployment-template.yml \
   SERVICE_VERSION=v2 \
+  SERVICE_DELAY=2000 \
   | istioctl kube-inject -f - | oc apply -f -
 
 # deploy web
