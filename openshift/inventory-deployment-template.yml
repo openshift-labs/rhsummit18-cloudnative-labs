@@ -28,6 +28,9 @@ objects:
           deploymentconfig: ${SERVICE_NAME}
       spec:
         containers:
+        - env:
+          - name: SERVICE_DELAY
+            value: ${SERVICE_DELAY}
         - image: siamaksade/rhsummit18-coolstore-inventory:latest
           imagePullPolicy: IfNotPresent
           name: ${SERVICE_NAME}
@@ -51,3 +54,7 @@ parameters:
     name: SERVICE_VERSION
     required: true
     value: v1
+  - displayName: Service Delay in ms
+    name: SERVICE_DELAY
+    required: false
+    value: "0"

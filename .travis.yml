@@ -24,7 +24,7 @@ before_install:
 script:
   - mvn -f catalog package
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-  - ${HOME}/bin/s2i build ./inventory centos/nginx-112-centos7 $INVENTORY_IMAGE_REPO:$TAG
-  - ${HOME}/bin/s2i build ./web centos/nodejs-4-centos7 $WEB_IMAGE_REPO:$TAG
+  - ${HOME}/bin/s2i build ./inventory centos/nodejs-8-centos7 $INVENTORY_IMAGE_REPO:$TAG
+  - ${HOME}/bin/s2i build ./web centos/nodejs-8-centos7 $WEB_IMAGE_REPO:$TAG
   - docker push $INVENTORY_IMAGE_REPO:$TAG
   - docker push $WEB_IMAGE_REPO:$TAG
