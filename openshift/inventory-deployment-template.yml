@@ -28,7 +28,7 @@ objects:
           deploymentconfig: ${SERVICE_NAME}
       spec:
         containers:
-        - image: centos/nginx-16-centos7:latest
+        - image: siamaksade/rhsummit18-coolstore-inventory:latest
           imagePullPolicy: IfNotPresent
           name: ${SERVICE_NAME}
           ports:
@@ -38,23 +38,9 @@ objects:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /opt/rh/nginx16/root/etc/nginx/conf.d/
-              name: volume-inventory-config
-            - mountPath: /opt/rh/nginx16/root/usr/share/nginx/html/inventory
-              name: volume-inventory-html
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
-        volumes:
-          - configMap:
-              defaultMode: 420
-              name: inventory-config
-            name: volume-inventory-config
-          - configMap:
-              defaultMode: 420
-              name: inventory-html
-            name: volume-inventory-html
     test: false
 parameters:
   - displayName: Service Name
