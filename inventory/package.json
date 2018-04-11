@@ -1,0 +1,29 @@
+{
+  "name": "inventory",
+  "version": "1.0.0",
+  "author": "Red Hat, Inc.",
+  "license": "Apache-2.0",
+  "scripts": {
+    "openshift": "nodeshift --osc.strictSSL=false",
+    "start": "PORT=8080 node ./bin/www"
+  },
+  "files": [
+    "package.json",
+    "app.js",
+    "public",
+    "bin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/openshift-labs/rhsummit18-cloudnative-labs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/openshift-labs/rhsummit18-cloudnative-labs/issues"
+  },
+  "homepage": "https://github.com/openshift-labs/rhsummit18-cloudnative-labs",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "debug": "^3.1.0",
+    "express": "^4.16.0"
+  }
+}
