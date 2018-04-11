@@ -1,7 +1,11 @@
 env:
   global:
-  - INVENTORY_IMAGE_REPO=siamaksade/rhsummit-coolstore-inventory
-  - WEB_IMAGE_REPO=siamaksade/rhsummit-coolstore-inventory
+  - INVENTORY_IMAGE_REPO=siamaksade/rhsummit18-coolstore-inventory
+  - WEB_IMAGE_REPO=siamaksade/rhsummit18-coolstore-web
+
+cache:
+  directories:
+  - $HOME/.m2
 
 services:
   - docker
@@ -12,11 +16,15 @@ jdk:
   - oraclejdk8
 
 before_install:
-#  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - cp .travis.settings.xml $HOME/.m2/settings.xml
-  - curl -o $HOME/s2i.tar.gz https://github.com/openshift/source-to-image/releases/download/v1.1.9/source-to-image-v1.1.9-db2b4645-linux-amd64.tar.gz 
-  - tar -C ${HOME}/bin $HOME/s2i.tar.gz
+  - curl -sL -o $HOME/s2i.tar.gz https://github.com/openshift/source-to-image/releases/download/v1.1.9/source-to-image-v1.1.9-db2b4645-linux-amd64.tar.gz 
+  - pushd $HOME/bin && tar xvfz $HOME/s2i.tar.gz && popd
 
 script:
   - mvn -f catalog package
-  - ${HOME}/bin/s2i build ./inventory centos/nginx-112-centos7 inventory
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - ${HOME}/bin/s2i build ./inventory centos/nginx-112-centos7 $INVENTORY_IMAGE_REPO:$TAG
+  - ${HOME}/bin/s2i build ./web centos/nodejs-4-centos7 $WEB_IMAGE_REPO:$TAG
+  - docker push $INVENTORY_IMAGE_REPO:$TAG
+  - docker push $WEB_IMAGE_REPO:$TAG
