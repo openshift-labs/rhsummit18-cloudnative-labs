@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CatalogService {
@@ -27,7 +26,12 @@ public class CatalogService {
         List<Product> productList = repository.readAll();
         productList.parallelStream()
                 .forEach(p -> {
-                    p.setQuantity(inventoryClient.getInventoryStatus(p.getItemId()).getQuantity());
+                    try {
+
+                        p.setQuantity(inventoryClient.getInventoryStatus(p.getItemId()).getQuantity());
+                    } catch (Exception ex) {
+                        p.setQuantity(-1);
+                    }
                 });
         return productList;
     }

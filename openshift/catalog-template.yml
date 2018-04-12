@@ -164,6 +164,8 @@ objects:
   data:
     application.properties: |-
       server.port=8080
+      spring.application.name=catalog
+      feign.hystrix.enabled=false
       spring.datasource.url=jdbc:postgresql://catalog-postgresql:5432/catalog
       spring.datasource.username=${DB_USERNAME}
       spring.datasource.password=${DB_PASSWORD}

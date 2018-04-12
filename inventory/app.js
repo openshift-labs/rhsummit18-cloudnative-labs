@@ -30,7 +30,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+var misbehave = false;
+
+app.get("/misbehave", (req, res) => {
+  misbehave = true;
+  res.sendStatus(204).end();
+});
+app.get("/behave", (req, res) => {
+  misbehave = false;
+  res.sendStatus(204).end();
+});
+
 app.use('/services/inventory/:itemId', (request, response) => {
+
+  if (misbehave) {
+    response.sendStatus(503).end();
+    return;
+  }
 
   const  itemId = request.params.itemId;
 

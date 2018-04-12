@@ -83,7 +83,7 @@ oc process -f $REPO_HOME/openshift/inventory-deployment-template.yml \
 # deploy inventory v2 with built-in delay
 oc process -f $REPO_HOME/openshift/inventory-deployment-template.yml \
   SERVICE_VERSION=v2 \
-  SERVICE_DELAY=2000 \
+  SERVICE_DELAY=5000 \
   | istioctl kube-inject -f - | oc apply -f -
 
 # deploy web
