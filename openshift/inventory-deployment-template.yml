@@ -31,7 +31,7 @@ objects:
         - env:
           - name: SERVICE_DELAY
             value: ${SERVICE_DELAY}
-          image: siamaksade/rhsummit18-coolstore-inventory:latest
+          image: siamaksade/rhsummit18-cloudnative-inventory:latest
           imagePullPolicy: IfNotPresent
           name: ${SERVICE_NAME}
           ports:

@@ -1,7 +1,7 @@
 env:
   global:
-  - INVENTORY_IMAGE_REPO=siamaksade/rhsummit18-coolstore-inventory
-  - WEB_IMAGE_REPO=siamaksade/rhsummit18-coolstore-web
+  - INVENTORY_IMAGE_REPO=siamaksade/rhsummit18-cloudnative-inventory
+  - WEB_IMAGE_REPO=siamaksade/rhsummit18-cloudnative-web
 
 cache:
   directories:
