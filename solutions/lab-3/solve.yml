@@ -13,7 +13,7 @@
         prefix: catalog-git
       register: git_dir
 
-    - name: clone catalog git repository to {{ git_dir.path }}
+    - name: clone catalog git repository
       shell: "git clone http://{{ gogs_user }}:{{ gogs_password }}@{{ gogs_hostname }}/{{ gogs_user }}/catalog.git"
       args:
         chdir: "{{ git_dir.path }}"
