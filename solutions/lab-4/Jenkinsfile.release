@@ -1,0 +1,49 @@
+def releaseTag
+
+pipeline {
+  agent {
+      label 'maven'
+  }
+  stages {
+    stage('Release Code') {
+      environment {
+        SCM_GIT_URL = sh(returnStdout: true, script: 'git config remote.origin.url').trim()
+      }
+      steps {
+        sh "git config --local user.email 'jenkins@cicd.com'"
+        sh "git config --local user.name 'jenkins'"
+
+        script {
+          releaseTag = readMavenPom().getVersion().replace("-SNAPSHOT", "")
+          openshift.withCluster() {
+            withCredentials([usernamePassword(credentialsId: "${openshift.project()}-git-credentials", usernameVariable: "GIT_USERNAME", passwordVariable: "GIT_PASSWORD")]) {
+              sh "mvn --batch-mode release:clean release:prepare release:perform -s .settings.xml"
+            }
+          }
+        }
+      }
+    }
+    stage('Release Image') {
+      steps {
+        script {
+          openshift.withCluster() {
+            echo "Releasing catalog image version ${releaseTag}"
+            openshift.tag("${openshift.project()}/catalog:latest", "${openshift.project()}/catalog:${releaseTag}")
+          }
+        }
+      }
+    }    
+    stage('Promote to PROD') {
+      steps {
+        script {
+          openshift.withCluster() {
+            def devNamespace = openshift.project()
+            openshift.withProject(env.PROD_PROJECT) {
+              openshift.tag("${devNamespace}/catalog:${releaseTag}", "${openshift.project()}/catalog:prod")
+            }
+          }
+        }
+      }
+    }    
+  }
+}

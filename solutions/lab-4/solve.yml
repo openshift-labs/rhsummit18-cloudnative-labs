@@ -1,0 +1,41 @@
+---
+- name: Solve Lab 4
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  vars_files:
+  - ../vars.yml
+      
+  tasks:
+    - name: create temporary git directory
+      tempfile:
+        state: directory
+        prefix: catalog-git
+      register: git_dir
+
+    - name: clone catalog git repository
+      shell: "git clone http://{{ gogs_user }}:{{ gogs_password }}@{{ gogs_hostname }}/{{ gogs_user }}/catalog.git"
+      args:
+        chdir: "{{ git_dir.path }}"
+
+    - name: create jenkinsfile
+      copy:
+        src: Jenkinsfile.release
+        dest: "{{ git_dir.path }}/catalog/Jenkinsfile.release"
+
+    - name: push jenkinsfile to catalog git repository
+      shell: |
+        git add Jenkinsfile.release
+        git commit -m "release pipeline added"
+        git push origin master
+      args:
+        chdir: "{{ git_dir.path }}/catalog"
+
+    - name: process build pipeline template
+      template:
+        src: pipeline.yml.j2
+        dest: "{{ git_dir.path }}/pipeline.yml"
+
+    - name: create release pipeline
+      shell: "oc create -f {{ git_dir.path }}/pipeline.yml -n {{ dev_project}}"
+      ignore_errors: true
