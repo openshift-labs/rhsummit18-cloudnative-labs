@@ -152,7 +152,7 @@ parameters:
   - displayName: Service Delay in ms
     name: SERVICE_DELAY
     required: false
-    value: "2"
+    value: "5000"
   - displayName: Image Version
     description: Web UI image version to deploy
     name: IMAGE_VERSION
