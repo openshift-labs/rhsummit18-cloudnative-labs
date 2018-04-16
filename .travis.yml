@@ -33,3 +33,5 @@ script:
   - docker push $INVENTORY_IMAGE_REPO:$PROD_TAG
   - docker push $WEB_IMAGE_REPO:$TAG
   - docker push $WEB_IMAGE_REPO:$PROD_TAG
+  - cp -R solutions/lab-2/catalog/* catalog/ && mvn -f catalog package
+  - cp -R solutions/lab-3/catalog/* catalog/ && mvn -f catalog package
