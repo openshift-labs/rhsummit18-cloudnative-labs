@@ -20,8 +20,8 @@
 
     - name: copy catalog source code
       copy:
-        src: pom.xml
-        dest: "{{ git_dir.path }}/catalog/pom.xml"
+        src: catalog/
+        dest: "{{ git_dir.path }}/catalog/"
 
     - name: push catalog source code git repository
       shell: |
