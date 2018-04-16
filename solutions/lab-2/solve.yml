@@ -1,0 +1,32 @@
+---
+- name: Solve Lab 2
+  hosts: localhost
+  gather_facts: false
+  run_once: true
+  vars_files:
+  - ../vars.yml
+      
+  tasks:
+    - name: create temporary git directory
+      tempfile:
+        state: directory
+        prefix: catalog-git
+      register: git_dir
+
+    - name: clone catalog git repository to {{ git_dir.path }}
+      shell: "git clone http://{{ gogs_user }}:{{ gogs_password }}@{{ gogs_hostname }}/{{ gogs_user }}/catalog.git"
+      args:
+        chdir: "{{ git_dir.path }}"
+
+    - name: copy catalog source code
+      copy:
+        src: catalog/
+        dest: "{{ git_dir.path }}/catalog/"
+
+    - name: push catalog source code git repository
+      shell: |
+        git add --all
+        git commit -m "updated the catalog project"
+        git push origin master
+      args:
+        chdir: "{{ git_dir.path }}/catalog"
