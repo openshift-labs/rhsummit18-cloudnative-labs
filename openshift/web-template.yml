@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: Template
+metadata:
+  annotations:
+    description: CoolStore Microservices - Web Template
+    iconClass: icon-java
+    tags: microservice,nodejs
+  name: web
+objects:
+# UI
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: coolstore
+      component: web-ui
+    name: web-ui
+  spec:
+    tags:
+      - from:
+          kind: DockerImage
+          name: 'docker.io/siamaksade/rhsummit18-cloudnative-web:${IMAGE_VERSION}'
+        name: ${IMAGE_VERSION}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: web-ui
+    labels:
+      app: coolstore
+      component: web-ui
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: web-ui
+    strategy:
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: coolstore
+          component: web-ui
+          deploymentconfig: web-ui
+      spec:
+        containers:
+        - env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: COOLSTORE_GW_SERVICE
+            value: catalog
+          - name: HOSTNAME_HTTP
+            value: web-ui:8080
+          image: web-ui
+          imagePullPolicy: Always
+          name: web-ui
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 120
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 50m
+              memory: 128Mi
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - web-ui
+        from:
+          kind: ImageStreamTag
+          name: web-ui:${IMAGE_VERSION}
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: coolstore
+      component: web-ui
+    name: web-ui
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: web-ui
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: web-ui
+    labels:
+      app: coolstore
+      component: web-ui
+  spec:
+    to:
+      kind: Service
+      name: web-ui
+parameters:
+- displayName: Image Version
+  description: Web UI image version to deploy
+  name: IMAGE_VERSION
+  required: true
+  value: latest
