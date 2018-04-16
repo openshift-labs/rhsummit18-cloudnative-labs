@@ -7,13 +7,11 @@ metadata:
     tags: microservice,nodejs
   name: web
 objects:
-# UI
 - apiVersion: image.openshift.io/v1
   kind: ImageStream
   metadata:
     labels:
-      app: coolstore
-      component: web-ui
+      app: web-ui
     name: web-ui
   spec:
     tags:
@@ -26,8 +24,7 @@ objects:
   metadata:
     name: web-ui
     labels:
-      app: coolstore
-      component: web-ui
+      app: web-ui
   spec:
     replicas: 1
     selector:
@@ -38,8 +35,7 @@ objects:
     template:
       metadata:
         labels:
-          app: coolstore
-          component: web-ui
+          app: web-ui
           deploymentconfig: web-ui
       spec:
         containers:
@@ -104,8 +100,7 @@ objects:
   kind: Service
   metadata:
     labels:
-      app: coolstore
-      component: web-ui
+      app: web-ui
     name: web-ui
   spec:
     ports:
@@ -120,8 +115,7 @@ objects:
   metadata:
     name: web-ui
     labels:
-      app: coolstore
-      component: web-ui
+      app: web-ui
   spec:
     to:
       kind: Service
