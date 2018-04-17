@@ -19,6 +19,10 @@
       shell: "oc new-app -f https://raw.githubusercontent.com/{{ github_account }}/rhsummit18-cloudnative-labs/{{ github_ref }}/openshift/catalog-template.yml -n {{ dev_project }}"
       ignore_errors: true
 
+    - name: rollout catalog
+      shell: "oc rollout latest dc/catalog -n {{ dev_project }}"
+      ignore_errors: true
+
     - name: deploy jenkins in {{ dev_project }}
       shell: "oc new-app jenkins-persistent -n {{ dev_project }}"
       ignore_errors: true
