@@ -1,5 +1,5 @@
 ---
-- name: Solve Lab 4
+- name: Solve Lab 5
   hosts: localhost
   gather_facts: false
   run_once: true
