@@ -25,6 +25,8 @@
 
     - name: push catalog source code git repository
       shell: |
+        git config user.email "rhdeveloper@redhat.com"
+        git config user.name "rh-developer"
         git add --all
         git commit -m "externalized database configuration"
         git push origin master

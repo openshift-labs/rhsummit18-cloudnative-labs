@@ -25,6 +25,8 @@
 
     - name: push jenkinsfile to catalog git repository
       shell: |
+        git config user.email "rhdeveloper@redhat.com"
+        git config user.name "rh-developer"
         git add Jenkinsfile.release
         git commit -m "release pipeline added"
         git push origin master
