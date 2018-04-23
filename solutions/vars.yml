@@ -1,6 +1,8 @@
 # Lab Solution Variables
 
-openshift_master: 
+guid: 
+
+openshift_master: https://master-{{ guid }}.generic.opentlc.com:8443
 
 # Projects
 project_suffix: 
@@ -13,7 +15,7 @@ github_account: openshift-labs
 github_ref: master
 
 # Gogs
-gogs_hostname: 
+gogs_hostname: gogs-lab-infra.apps-{{ guid }}.generic.opentlc.com
 gogs_admin_user: gogs
 gogs_admin_password: openshift
 gogs_user: developer
