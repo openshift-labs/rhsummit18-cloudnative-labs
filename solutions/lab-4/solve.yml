@@ -7,6 +7,9 @@
   - ../vars.yml
       
   tasks:
+    - name: deploy inventory in {{ dev_project }}
+      shell: "oc new-app -f https://raw.githubusercontent.com/{{ github_account }}/rhsummit18-cloudnative-labs/{{ github_ref }}/openshift/inventory-dev-template.yml -n {{ dev_project }}"
+      ignore_errors: true
     - name: create temporary git directory
       tempfile:
         state: directory
