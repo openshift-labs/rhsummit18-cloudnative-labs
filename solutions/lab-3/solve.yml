@@ -32,3 +32,6 @@
         git push origin master
       args:
         chdir: "{{ git_dir.path }}/catalog"
+    - name: Add view role to system:default user in {{ dev_project }}
+      shell: "oc policy add-role-to-user view -n {{ dev_project }} -z default"
+      ignore_errors: true
