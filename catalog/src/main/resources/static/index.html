@@ -25,7 +25,6 @@
     <div class="row">
         <div class="col-md-12">
             <br><br>
-            <button class="btn btn-danger btn-lg" onclick="fetchCatalog()">Fetch Catalog</button>
             <hr>
             <center>
                 <h1>The CoolStore Catalog</h1>
@@ -38,10 +37,11 @@
                     <th>Price</th>
                     <th>Inventory Quantity</th>
                 </tr>
+                <tr>
+                    <td colspan=5 style="text-align: center;"><img alt="" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwcHgiICBoZWlnaHQ9IjIwMHB4IiAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiIGNsYXNzPSJsZHMtZWNsaXBzZSIgc3R5bGU9ImJhY2tncm91bmQ6IG5vbmU7Ij48cGF0aCBuZy1hdHRyLWQ9Int7Y29uZmlnLnBhdGhDbWR9fSIgbmctYXR0ci1maWxsPSJ7e2NvbmZpZy5jb2xvcn19IiBzdHJva2U9Im5vbmUiIGQ9Ik0xMCA1MEE0MCA0MCAwIDAgMCA5MCA1MEE0MCA0MiAwIDAgMSAxMCA1MCIgZmlsbD0iIzFkM2Y3MiIgdHJhbnNmb3JtPSJyb3RhdGUoMzAwIDUwIDUxKSI+PGFuaW1hdGVUcmFuc2Zvcm0gYXR0cmlidXRlTmFtZT0idHJhbnNmb3JtIiB0eXBlPSJyb3RhdGUiIGNhbGNNb2RlPSJsaW5lYXIiIHZhbHVlcz0iMCA1MCA1MTszNjAgNTAgNTEiIGtleVRpbWVzPSIwOzEiIGR1cj0iMXMiIGJlZ2luPSIwcyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiPjwvYW5pbWF0ZVRyYW5zZm9ybT48L3BhdGg+PC9zdmc+"></td>
+                </tr>
             </table>
             <hr>
-            <button class="btn btn-danger btn-lg" onclick="fetchCatalog()">Fetch Catalog</button>
-
         </div>
     </div>
 
@@ -67,59 +67,39 @@
         crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+$.ajax(
+{
+    type: "GET",
+    url: '/services/products',
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    cache: false,
+    timeout: 5000,
+    success: function (data) {
+        var trHTML = '';
 
-    var lastFetch;
+        $.each(data, function (i, product) {
 
-    function fetchCatalog() {
+            trHTML += '<tr>' +
+                '<td>' + product.itemId + '</td>' +
+                '<td><strong>' + product.name + '</strong></td>' +
+                '<td>' + product.description + '</a></td>' +
+                '<td>' + product.price + '</a></td>' +
+                '<td>' + (product.quantity == -1 ? 'undefined' : product.quantity) + '</a></td>' +
+                '</tr>';
+        });
 
-        $.ajax(
-            {
-                type: "GET",
-                url: '/services/products',
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                cache: false,
-                timeout: 1800,
-                success: function (data) {
-                    var trHTML = '';
-
-                    lastFetch = new Date().getTime();
-
-                    $.each(data, function (i, product) {
-
-                        trHTML += '<tr>' +
-                            '<td>' + product.itemId + '</td>' +
-                            '<td><strong>' + product.name + '</strong></td>' +
-                            '<td>' + product.description + '</a></td>' +
-                            '<td>' + product.price + '</a></td>' +
-                            '<td>' + product.quantity + '</a></td>' +
-                            '</tr>';
-                    });
-
-                    $('#products').find("tr:gt(0)").remove();
-                    $('#products').append(trHTML);
-                },
-
-                error: function (msg) {
-
-                    $('#statusCode').text("DEAD (" + (msg.statusText ? msg.statusText : "") + ")").css('color', 'red');
-                    $("#fetchAge").text(Math.floor(((new Date().getTime() - lastFetch) / 1000)) + " seconds ago");
-
-                    // $("time#statusTime").timeago("update", new Date());
-                    //$('#statusTime').attr('datetime', now).textContent(now);
-                }
-            });
+        $('#products').find("tr:gt(0)").remove();
+        $('#products').append(trHTML);
+    },
+    error: function (msg) {
+        $('#products').find("tr:gt(0)").remove();
+        $('#products').append('<tr><td colspan=5>FAILED ' + (msg.statusText ? msg.statusText : 'No error message') + '</td></tr>');
     }
+        
+});
+    
 
-    $(document).ready(function () {
-        jQuery("time.timeago").timeago();
-
-        fetchCatalog();
-
-        setInterval(function() {
-            fetchCatalog();
-        }, 2000);
-    })
 
 </script>
 </body>
