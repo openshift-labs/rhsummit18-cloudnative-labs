@@ -72,7 +72,7 @@ objects:
         containers:
         - env:
           - name: SERVICE_DELAY
-            value: ${SERVICE_DELAY}
+            value: "0"
           image: inventory
           imagePullPolicy: IfNotPresent
           name: inventory
@@ -120,7 +120,7 @@ objects:
         containers:
         - env:
           - name: SERVICE_DELAY
-            value: "0"
+            value: ${SERVICE_DELAY}
           image: inventory
           imagePullPolicy: IfNotPresent
           name: inventory
@@ -152,7 +152,7 @@ parameters:
   - displayName: Service Delay in ms
     name: SERVICE_DELAY
     required: false
-    value: "1000"
+    value: "2000"
   - displayName: Image Version
     description: Web UI image version to deploy
     name: IMAGE_VERSION
