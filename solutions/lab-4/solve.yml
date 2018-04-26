@@ -8,13 +8,37 @@
       
   tasks:
     - name: deploy inventory in {{ dev_project }}
-      shell: "oc new-app inventory-dev -n {{ dev_project }}"
+      shell: "oc new-app inventory-mockup -n {{ dev_project }}"
       ignore_errors: true
     - name: create temporary git directory
       tempfile:
         state: directory
         prefix: catalog-git
       register: git_dir
+    
+    - name: Update the configmap
+      shell:
+        cmd: |
+          cat <<EOF | oc replace -f - -n {{ dev_project }}
+          apiVersion: v1
+          data:
+            application.properties: |
+              server.port=8080
+              spring.application.name=catalog
+              feign.hystrix.enabled=false
+              spring.datasource.url=jdbc:postgresql://catalog-postgresql:5432/catalog
+              spring.datasource.username=userhc4
+              spring.datasource.password=5yLj5bGD
+              spring.datasource.driver-class-name=org.postgresql.Driver
+              spring.jpa.hibernate.ddl-auto=create
+              ribbon.listOfServers=inventory:8080
+          kind: ConfigMap
+          metadata:
+            labels:
+              app: catalog
+            name: catalog
+          EOF
+      ignore_errors: true
 
     - name: clone catalog git repository
       shell: "git clone http://{{ gogs_user }}:{{ gogs_password }}@{{ gogs_hostname }}/{{ gogs_user }}/catalog.git"
