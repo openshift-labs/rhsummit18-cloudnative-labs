@@ -93,7 +93,7 @@ objects:
         - inventory
         from:
           kind: ImageStreamTag
-          name: inventory:${IMAGE_VERSION}
+          name: inventory:latest
       type: ImageChange
     - type: ConfigChange
 parameters:
