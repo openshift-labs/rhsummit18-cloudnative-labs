@@ -4,7 +4,7 @@ metadata:
   annotations:
     description: CoolStore Microservices - Inventory Template
     tags: microservice,nginx
-  name: inventory
+  name: inventory-dev
 objects:
 - apiVersion: image.openshift.io/v1
   kind: ImageStream
@@ -16,8 +16,8 @@ objects:
     tags:
       - from:
           kind: DockerImage
-          name: 'docker.io/siamaksade/rhsummit18-cloudnative-inventory:${IMAGE_VERSION}'
-        name: ${IMAGE_VERSION}
+          name: 'docker.io/siamaksade/rhsummit18-cloudnative-inventory:latest'
+        name: latest
 - apiVersion: v1
   kind: Service
   metadata:
@@ -105,8 +105,3 @@ parameters:
     name: SERVICE_DELAY
     required: false
     value: "100"
-  - displayName: Image Version
-    description: Web UI image version to deploy
-    name: IMAGE_VERSION
-    required: true
-    value: latest
