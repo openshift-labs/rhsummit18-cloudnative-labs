@@ -4,7 +4,7 @@ metadata:
   annotations:
     description: CoolStore Microservices - Inventory Template
     tags: microservice,nginx
-  name: inventory-dev
+  name: inventory-mockup
 objects:
 - apiVersion: image.openshift.io/v1
   kind: ImageStream
