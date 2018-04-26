@@ -1,18 +1,15 @@
 package com.redhat.coolstore.service;
 
 import static io.specto.hoverfly.junit.core.SimulationSource.dsl;
-import static io.specto.hoverfly.junit.dsl.HoverflyDsl.response;
 import static io.specto.hoverfly.junit.dsl.HoverflyDsl.service;
 import static io.specto.hoverfly.junit.dsl.HttpBodyConverter.json;
-import static io.specto.hoverfly.junit.dsl.ResponseCreators.success;
 import static io.specto.hoverfly.junit.dsl.ResponseCreators.serverError;
-import static io.specto.hoverfly.junit.dsl.matchers.HoverflyMatchers.startsWith;
+import static io.specto.hoverfly.junit.dsl.ResponseCreators.success;
 import static org.assertj.core.api.Assertions.assertThat;
+import io.specto.hoverfly.junit.rule.HoverflyRule;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import io.specto.hoverfly.junit.rule.HoverflyRule;
 
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -55,7 +52,7 @@ public class ProductEndpointTest {
 
     @ClassRule
     public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(dsl(
-            service("inventory:8080")                     
+            service("mock-service.example.com:8080")                     
                     .get("/services/inventory/329299")
                         .willReturn(success(json(mockFedoraInventory)))
                     .get("/services/inventory/329199")
@@ -75,7 +72,7 @@ public class ProductEndpointTest {
     ));
     
     @Test
-    public void test_retriving_one_proudct() {
+    public void test_retrieving_one_product() {
         hoverflyRule.printSimulationData();
         ResponseEntity<Product> response
                 = restTemplate.getForEntity("/services/product/329199", Product.class);

@@ -34,7 +34,7 @@ public class InventoryClientTest {
 
     @ClassRule
     public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(dsl(
-            service("inventory:8080")
+            service("mock-service.example.com:80")
                     .get(startsWith("/services/inventory"))
                     .willReturn(success(json(mockInventory)))));
 
