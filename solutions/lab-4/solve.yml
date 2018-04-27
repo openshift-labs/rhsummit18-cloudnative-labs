@@ -15,6 +15,18 @@
         state: directory
         prefix: catalog-git
       register: git_dir
+
+    - name: Get database user
+      shell: "oc env dc/catalog-postgresql --list | grep POSTGRESQL_USER | cut -d'=' -f2"
+      register: cmd_output
+
+    - set_fact: postgresql_user={{cmd_output.stdout}}
+    
+    - name: Get database password
+      shell: "oc env dc/catalog-postgresql --list | grep POSTGRESQL_PASSWORD | cut -d'=' -f2"
+      register: cmd_output
+
+    - set_fact: postgresql_password={{cmd_output.stdout}}
     
     - name: Update the configmap
       shell:
@@ -27,8 +39,8 @@
               spring.application.name=catalog
               feign.hystrix.enabled=false
               spring.datasource.url=jdbc:postgresql://catalog-postgresql:5432/catalog
-              spring.datasource.username=userhc4
-              spring.datasource.password=5yLj5bGD
+              spring.datasource.username={{ postgresql_user }}
+              spring.datasource.password={{ postgresql_password }}
               spring.datasource.driver-class-name=org.postgresql.Driver
               spring.jpa.hibernate.ddl-auto=create
               ribbon.listOfServers=inventory:8080
