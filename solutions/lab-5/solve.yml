@@ -43,11 +43,11 @@
       ignore_errors: true
 
     - name: label the secret for Jenkins
-      shell: "oc label secret git-credentials credential.sync.jenkins.openshift.io=true -n {{ prod_project }}"
+      shell: "oc label secret git-credentials credential.sync.jenkins.openshift.io=true -n {{ dev_project }}"
       ignore_errors: true
 
     - name: give Jenkins access to deploy into the prod project
-      shell: "oc policy add-role-to-user system:deployer system:serviceaccount:{{ dev_project }}:jenkins -n {{ prod_project }}"
+      shell: "oc policy add-role-to-user admin system:serviceaccount:{{ dev_project }}:jenkins -n {{ prod_project }}"
       ignore_errors: true
 
     - name: create release pipeline
