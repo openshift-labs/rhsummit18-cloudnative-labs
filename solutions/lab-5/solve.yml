@@ -39,17 +39,16 @@
         dest: "{{ git_dir.path }}/pipeline.yml"
 
     - name: create secret for git-credentials
-      shell: "oc create secret generic git-credentials --from-literal=username=developer --from-literal=password=openshift"
+      shell: "oc create secret generic git-credentials --from-literal=username={{ gogs_user }} --from-literal=password={{ gogs_password }} -n {{ dev_project }}"
       ignore_errors: true
 
     - name: label the secret for Jenkins
-      shell: "oc label secret git-credentials credential.sync.jenkins.openshift.io=true"
+      shell: "oc label secret git-credentials credential.sync.jenkins.openshift.io=true -n {{ prod_project }}"
       ignore_errors: true
-    
-# The below doesn't work since the developer user doesn't have access to the prod project.
-#    - name: give Jenkins access to deploy into the prod project
-#      shell: "oc policy add-role-to-user system:deployer system:serviceaccount:dev:jenkins -n prod"
-#      ignore_errors: true
+
+    - name: give Jenkins access to deploy into the prod project
+      shell: "oc policy add-role-to-user system:deployer system:serviceaccount:{{ dev_project }}:jenkins -n {{ prod_project }}"
+      ignore_errors: true
 
     - name: create release pipeline
       shell: "oc create -f {{ git_dir.path }}/pipeline.yml -n {{ dev_project}}"
