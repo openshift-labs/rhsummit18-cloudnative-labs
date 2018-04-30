@@ -32,7 +32,3 @@
         git push origin master
       args:
         chdir: "{{ git_dir.path }}/catalog"
-
-     - name: deploy web-ui in {{ dev_project }}
-      shell: "oc new-app -f https://raw.githubusercontent.com/openshift-labs/rhsummit18-cloudnative-labs/master/openshift/web-template.yml -n {{ dev_project }}"
-      ignore_errors: true
