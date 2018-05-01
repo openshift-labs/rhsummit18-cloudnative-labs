@@ -47,7 +47,7 @@ app.get('/delay/:delay', (req, res) => {
 });
 
 app.use('/services/inventory/:itemId', (request, response) => {
-  console.log(new Data() + "Processing request " + request.method +  " " request.originalUrl);
+  console.log(new Data() + "Processing request " + request.method +  " " + request.originalUrl);
   console.log(new Date() + JSON.stringify(req.headers));
 
   if (misbehave) {
