@@ -66,11 +66,31 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>jboss-earlyaccess-maven-repository</id>
+      <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
       <id>jboss-enterprise-maven-repository</id>
       <url>https://maven.repository.redhat.com/ga/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>jboss-earlyaccess-maven-repository</id>
+      <url>https://maven.repository.redhat.com/earlyaccess/all</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -174,7 +194,17 @@
           <artifactId>postgresql</artifactId>
           <version>${postgresql.version}</version>
         </dependency>
-        <!-- add additional dependencies -->
+        <dependency>
+          <groupId>io.opentracing.contrib</groupId>
+          <artifactId>opentracing-spring-cloud-starter</artifactId>
+          <version>0.1.7</version>
+        </dependency>
+        <dependency>
+          <groupId>com.uber.jaeger</groupId>
+          <artifactId>jaeger-tracerresolver</artifactId>
+          <version>0.26.0</version>
+        </dependency>
+        <!-- add kubernetes-config dependencies here-->
         <dependency>
           <groupId>org.springframework.cloud</groupId>
           <artifactId>spring-cloud-starter-kubernetes-config</artifactId>

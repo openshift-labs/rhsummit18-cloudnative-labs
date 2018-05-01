@@ -127,6 +127,7 @@
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <!-- Add Feign dependency here -->
     <!-- Testing -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -193,7 +194,17 @@
           <artifactId>postgresql</artifactId>
           <version>${postgresql.version}</version>
         </dependency>
-        <!-- add additional dependencies -->
+        <dependency>
+          <groupId>io.opentracing.contrib</groupId>
+          <artifactId>opentracing-spring-cloud-starter</artifactId>
+          <version>0.1.7</version>
+        </dependency>
+        <dependency>
+          <groupId>com.uber.jaeger</groupId>
+          <artifactId>jaeger-tracerresolver</artifactId>
+          <version>0.26.0</version>
+        </dependency>
+        <!-- add kubernetes-config dependencies here-->
       </dependencies>
       <build>
         <plugins>
