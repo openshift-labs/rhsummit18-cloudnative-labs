@@ -32,10 +32,9 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
     <fabric8-maven-plugin.version>3.5.34</fabric8-maven-plugin.version>
-    <spring-boot.bom.version>1.5.8.Final-redhat-1</spring-boot.bom.version>
+    <spring-boot.bom.version>1.5.10.SP2-redhat-2</spring-boot.bom.version>
     <postgresql.version>9.4.1212</postgresql.version>
     <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
-    <netflix.feign.version>8.15.1</netflix.feign.version>
     <spring-boot-maven-plugin.version>2.0.1.RELEASE</spring-boot-maven-plugin.version>
     <project.scm.id>git</project.scm.id>
   </properties>
@@ -66,11 +65,31 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>jboss-earlyaccess-maven-repository</id>
+      <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
       <id>jboss-enterprise-maven-repository</id>
       <url>https://maven.repository.redhat.com/ga/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>jboss-earlyaccess-maven-repository</id>
+      <url>https://maven.repository.redhat.com/earlyaccess/all</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -102,14 +121,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-feign</artifactId>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
