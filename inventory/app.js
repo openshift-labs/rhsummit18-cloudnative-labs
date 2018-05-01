@@ -41,7 +41,14 @@ app.get("/behave", (req, res) => {
   res.sendStatus(204).end();
 });
 
+app.get('/delay/:delay', (req, res) => {
+  SERVICE_DELAY = request.params.delay;
+  res.sendStatus(204).end();
+});
+
 app.use('/services/inventory/:itemId', (request, response) => {
+  console.log(new Data() + "Processing request " + request.method +  " " request.originalUrl);
+  console.log(new Date() + JSON.stringify(req.headers));
 
   if (misbehave) {
     response.sendStatus(503).end();
@@ -61,7 +68,7 @@ app.use('/services/inventory/:itemId', (request, response) => {
       return el.itemId === itemId;
     });
     if (inventory_result) {
-      console.log(new Date() + " - GET /services/inventory/" + itemId + ": 200 OK");
+      console.log(new Date() + " - GET /services/inventory/" + itemId + ": 200 OK" + " after a delay of " + SERVICE_DELAY);
       return response.json(inventory_result);
     } else {
       console.log(new Date() + " - GET /services/inventory/" + itemId + ": 404 Not Found");
