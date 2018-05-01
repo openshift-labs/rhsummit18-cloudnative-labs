@@ -41,15 +41,8 @@ app.get("/behave", (req, res) => {
   res.sendStatus(204).end();
 });
 
-app.get('/delay/:delay', (req, res) => {
-  SERVICE_DELAY = request.params.delay;
-  res.sendStatus(204).end();
-});
-
 app.use('/services/inventory/:itemId', (request, response) => {
-  console.log(new Date() + " - Processing request " + request.method +  " " + request.originalUrl);
-  console.log(new Date() + " - " + JSON.stringify(request.headers));
-
+  
   if (misbehave) {
     response.sendStatus(503).end();
     return;
