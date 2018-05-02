@@ -1,5 +1,5 @@
 ---
-- name: Solve Lab 4
+- name: Solve Lab 6
   hosts: localhost
   gather_facts: false
   run_once: true
@@ -28,10 +28,10 @@
         git config user.email "rhdeveloper@redhat.com"
         git config user.name "rh-developer"
         git add --all
-        git commit -m "connected catalog to inventory"
+        git commit -m "improve performance of catalog by using a batch call to inventory"
         git push origin master
       args:
         chdir: "{{ git_dir.path }}/catalog"
 
     - debug: 
-      msg: After the catalog-build (pipeline) has execute run oc start-build catalog-release -n {{ dev_project }}  
+      msg: After the catalog-build (pipeline) has execute run oc start-build catalog-release -n {{ dev_project }}
