@@ -32,10 +32,9 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
     <fabric8-maven-plugin.version>3.5.34</fabric8-maven-plugin.version>
-    <spring-boot.bom.version>1.5.8.Final-redhat-1</spring-boot.bom.version>
+    <spring-boot.bom.version>1.5.10.SP2-redhat-2</spring-boot.bom.version>
     <postgresql.version>9.4.1212</postgresql.version>
     <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
-    <netflix.feign.version>8.15.1</netflix.feign.version>
     <spring-boot-maven-plugin.version>2.0.1.RELEASE</spring-boot-maven-plugin.version>
     <project.scm.id>git</project.scm.id>
   </properties>
@@ -204,7 +203,7 @@
           <artifactId>jaeger-tracerresolver</artifactId>
           <version>0.26.0</version>
         </dependency>
-        <!-- add kubernetes-config dependencies here-->
+        <!-- add additional dependencies -->
         <dependency>
           <groupId>org.springframework.cloud</groupId>
           <artifactId>spring-cloud-starter-kubernetes-config</artifactId>
