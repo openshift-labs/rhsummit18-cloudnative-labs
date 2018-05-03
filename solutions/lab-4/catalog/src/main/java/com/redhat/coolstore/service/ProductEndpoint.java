@@ -49,10 +49,10 @@ public class ProductEndpoint {
     public ResponseEntity<Product> readOne(@PathVariable("id") String id) {
         Product product = productRepository.findOne(id);
         try {
-          Inventory inventory = inventoryClient.getInventoryStatus(id);
-          product.setQuantity(inventory.getQuantity());
+            Inventory inventory = inventoryClient.getInventoryStatus(id);
+            product.setQuantity(inventory.getQuantity());
         } catch (feign.FeignException e) {
-          product.setQuantity(-1);
+            product.setQuantity(-1);
         }
         return new ResponseEntity<Product>(product,HttpStatus.OK);
     }

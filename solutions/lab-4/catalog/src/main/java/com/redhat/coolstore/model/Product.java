@@ -3,6 +3,7 @@ package com.redhat.coolstore.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity
 public class Product {
@@ -12,6 +13,7 @@ public class Product {
     @Column(length = 2500)
     private String description;
     private double price;
+    @Transient
     private int quantity;
     
     public int getQuantity() {

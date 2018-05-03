@@ -68,8 +68,8 @@ public class ProductEndpointTest {
                 .get("/services/inventory/444435")
                     .willReturn(success(json(mockDefaultInventory)))
                 .get("/services/inventory/444436")
-                    .willReturn(serverError().body("Inventory is down"))
-                    //.willReturn(success(json(mockDefaultInventory)))
+                    //.willReturn(serverError().body("Inventory is down"))
+                    .willReturn(success(json(mockDefaultInventory)))
     ));
     
     @Test
