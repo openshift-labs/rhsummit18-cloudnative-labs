@@ -99,10 +99,6 @@ objects:
       type: ImageChange
     - type: ConfigChange
 parameters:
-  - displayName: Service Name
-    name: SERVICE_NAME
-    required: true
-    value: inventory
   - displayName: Service Delay in ms
     name: SERVICE_DELAY
     required: false
