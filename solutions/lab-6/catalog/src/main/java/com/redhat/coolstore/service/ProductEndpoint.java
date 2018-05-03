@@ -30,26 +30,28 @@ public class ProductEndpoint {
     @ResponseBody
     @GetMapping("/products")
     public ResponseEntity<List<Product>> readAll() {
-        List<Product> productList = productRepository.readAll();
+        Spliterator<Product> iterator = productRepository.findAll().spliterator();
+        List<Product> products = StreamSupport.stream(iterator, false).collect(Collectors.toList());
 
         //Get all the inventory and convert it to a Map.
         Map<String, Integer> inventoryMap = inventoryClient.getInventoryStatusForAll()
                 .stream()
-                .collect(Collectors.toMap((Inventory i) -> i.itemId, (Inventory i) -> i.quantity));
+                .collect(Collectors.toMap((Inventory i) -> i.getItemId(), (Inventory i) -> i.getQuantity()));
 
-        productList.stream().forEach(p -> p.quantity = inventoryMap.get(p.itemId));
-        return new ResponseEntity<List<Product>>(productList,HttpStatus.OK);
+        products.stream().forEach(p -> p.setQuantity(inventoryMap.get(p.itemId));
+
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
-    
+
     @ResponseBody
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> readOne(@PathVariable("id") String id) {
-        Product product = productRepository.findById(id);
+        Product product = productRepository.findOne(id);
         try {
-            Inventory inventory = inventoryClient.getInventoryStatus(id);
-            product.quantity = inventory.quantity;
+          Inventory inventory = inventoryClient.getInventoryStatus(id);
+          product.setQuantity(inventory.getQuantity());
         } catch (feign.FeignException e) {
-            product.quantity = -1;
+          p.setQuantity(-1);
         }
         return new ResponseEntity<Product>(product,HttpStatus.OK);
     }

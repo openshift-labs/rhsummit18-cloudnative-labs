@@ -38,38 +38,38 @@ public class ProductEndpointTest {
 
     static {
         mockFedoraInventory = new Inventory();
-        mockFedoraInventory.quantity = 123;
-        mockFedoraInventory.itemId = "329299";
+        mockFedoraInventory.setQuantity(123);
+        mockFedoraInventory.setItemId("329299");
         
         mockStickersInventory = new Inventory();
-        mockStickersInventory.quantity = 98;
-        mockStickersInventory.itemId = "329199";
+        mockStickersInventory.setQuantity(98);
+        mockStickersInventory.setItemId("329199");
     
         mockDefaultInventory = new Inventory();
-        mockDefaultInventory.quantity = 0;
-        mockDefaultInventory.itemId = "{{ Request.Path.[3] }}";
+        mockDefaultInventory.setQuantity(0);
+        mockDefaultInventory.setItemId("{{ Request.Path.[3] }}");
     }
 
     @ClassRule
     public static HoverflyRule hoverflyRule = HoverflyRule.inSimulationMode(dsl(
-            service("mock-service.example.com:8080")                     
-                    .get("/services/inventory/329299")
-                        .willReturn(success(json(mockFedoraInventory)))
-                    .get("/services/inventory/329199")
-                        .willReturn(success(json(mockStickersInventory)))
-                    .get("/services/inventory/165613")
-                        .willReturn(success(json(mockDefaultInventory)))
-                    .get("/services/inventory/165614")
-                        .willReturn(success(json(mockDefaultInventory)))
-                    .get("/services/inventory/165954")
-                        .willReturn(success(json(mockDefaultInventory)))
-                    .get("/services/inventory/444434")
-                        .willReturn(success(json(mockDefaultInventory)))
-                    .get("/services/inventory/444435")
-                        .willReturn(success(json(mockDefaultInventory)))
-                    .get("/services/inventory/444436")
-                        .willReturn(serverError().body("Inventory is down"))
-                        //.willReturn(success(json(mockDefaultInventory)))
+        service("mock-service.example.com:8080")                     
+                .get("/services/inventory/329299")
+                    .willReturn(success(json(mockFedoraInventory)))
+                .get("/services/inventory/329199")
+                    .willReturn(success(json(mockStickersInventory)))
+                .get("/services/inventory/165613")
+                    .willReturn(success(json(mockDefaultInventory)))
+                .get("/services/inventory/165614")
+                    .willReturn(success(json(mockDefaultInventory)))
+                .get("/services/inventory/165954")
+                    .willReturn(success(json(mockDefaultInventory)))
+                .get("/services/inventory/444434")
+                    .willReturn(success(json(mockDefaultInventory)))
+                .get("/services/inventory/444435")
+                    .willReturn(success(json(mockDefaultInventory)))
+                .get("/services/inventory/444436")
+                    .willReturn(serverError().body("Inventory is down"))
+                    //.willReturn(success(json(mockDefaultInventory)))
     ));
     
     @Test
@@ -80,10 +80,10 @@ public class ProductEndpointTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Product product = response.getBody();
         assertThat(product)
-                .returns("329199",p -> p.itemId)
-                .returns("Forge Laptop Sticker",p -> p.name)
-                .returns(98,p -> p.quantity)
-                .returns(8.50,p -> p.price);
+                .returns("329199",p -> p.getItemId())
+                .returns("Forge Laptop Sticker",p -> p.getName())
+                .returns(98,p -> p.getQuantity())
+                .returns(8.50,p -> p.getPrice());
     }
     
     @Test
@@ -96,7 +96,7 @@ public class ProductEndpointTest {
         List<Product> productList = rateResponse.getBody();
         assertThat(productList).isNotNull();
         assertThat(productList).isNotEmpty();
-        List<String> names = productList.stream().map(p -> p.name).collect(Collectors.toList());
+        List<String> names = productList.stream().map(p -> p.getName()).collect(Collectors.toList());
         assertThat(names).contains("Red Fedora","Forge Laptop Sticker","Oculus Rift");   
     }
     
@@ -108,9 +108,9 @@ public class ProductEndpointTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Product product = response.getBody();
         assertThat(product)
-                .returns("444436",p -> p.itemId)
-                .returns("Lytro Camera",p -> p.name)
-                .returns(-1,p -> p.quantity)
-                .returns(44.30,p -> p.price);
+                .returns("444436",p -> p.getItemId())
+                .returns("Lytro Camera",p -> p.getName())
+                .returns(-1,p -> p.getQuantity())
+                .returns(44.30,p -> p.getPrice());
     }
 }

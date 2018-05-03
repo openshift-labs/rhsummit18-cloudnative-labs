@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,19 +21,19 @@ public class ProductRepositoryTest {
     ProductRepository repository;
     
     @Test
-    public void test_readOne() {
-        Product product = repository.findById("444434");
+    public void test_findOne() {
+        Product product = repository.findOne("444434");
         assertThat(product).isNotNull();
-        assertThat(product.name).as("Verify product name").isEqualTo("Pebble Smart Watch");
-        assertThat(product.price).as("Price should match ").isEqualTo(24.0);
+        assertThat(product.getName()).as("Verify product name").isEqualTo("Pebble Smart Watch");
+        assertThat(product.getPrice()).as("Price should match ").isEqualTo(24.0);
     }
     
     @Test
-    public void test_readAll() {
-        List<Product> productList = repository.readAll();
-        assertThat(productList).isNotNull();
-        assertThat(productList).isNotEmpty();
-        List<String> names = productList.stream().map(p -> p.name).collect(Collectors.toList());
+    public void test_findAll() {
+        Iterable<Product> products = repository.findAll();
+        assertThat(products).isNotNull();
+        assertThat(products).isNotEmpty();
+        List<String> names = StreamSupport.stream(products.spliterator(), false).map(p -> p.getName()).collect(Collectors.toList());
         assertThat(names).contains("Red Fedora","Forge Laptop Sticker","Oculus Rift","Solid Performance Polo","16 oz. Vortex Tumbler","Pebble Smart Watch","Lytro Camera");
     }
 }

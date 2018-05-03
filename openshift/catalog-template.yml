@@ -25,6 +25,8 @@ objects:
         labels:
           app: catalog
           deploymentconfig: catalog
+        annotations:
+          sidecar.istio.io/inject: "true"
         name: catalog
       spec:
         containers:
@@ -139,6 +141,8 @@ objects:
         labels:
           app: catalog
           deploymentconfig: catalog-postgresql
+        annotations:
+          sidecar.istio.io/inject: "true"
         name: catalog-postgresql
       spec:
         containers:

@@ -28,27 +28,28 @@ public class ProductEndpoint {
     @ResponseBody
     @GetMapping("/products")
     public ResponseEntity<List<Product>> readAll() {
-        List<Product> productList = productRepository.readAll();
-        productList.stream()
+        Spliterator<Product> iterator = productRepository.findAll().spliterator();
+        List<Product> products = StreamSupport.stream(iterator, false).collect(Collectors.toList());
+        products.stream()
                 .forEach(p -> {
                     try {
-                        p.quantity = inventoryClient.getInventoryStatus(p.itemId).quantity;
+                        p.setQuantity(inventoryClient.getInventoryStatus(p.getItemId()).getQuantity());
                     } catch (feign.FeignException e) {
-                        p.quantity = -1;
+                        p.setQuantity(-1);
                     }
                 });
-        return new ResponseEntity<List<Product>>(productList,HttpStatus.OK);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
     
     @ResponseBody
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> readOne(@PathVariable("id") String id) {
-        Product product = productRepository.findById(id);
+        Product product = productRepository.findOne(id);
         try {
-            Inventory inventory = inventoryClient.getInventoryStatus(id);
-            product.quantity = inventory.quantity;
+          Inventory inventory = inventoryClient.getInventoryStatus(id);
+          product.setQuantity(inventory.getQuantity());
         } catch (feign.FeignException e) {
-            product.quantity = -1;
+          product.setQuantity(-1);
         }
         return new ResponseEntity<Product>(product,HttpStatus.OK);
     }
