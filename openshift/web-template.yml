@@ -37,8 +37,8 @@ objects:
         labels:
           app: web-ui
           deploymentconfig: web-ui
-        annotations:
-          sidecar.istio.io/inject: "true"
+        # annotations:
+        #   sidecar.istio.io/inject: "true"
       spec:
         containers:
         - env:
