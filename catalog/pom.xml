@@ -127,7 +127,7 @@
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!-- Add Feign dependency here -->
+    <!-- add additional dependencies -->
     <!-- Testing -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
