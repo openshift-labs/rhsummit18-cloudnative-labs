@@ -30,7 +30,10 @@ objects:
         name: catalog
       spec:
         containers:
-        - image: catalog
+        - env:
+          - name: JAEGER_SERVICE_NAME
+            value: catalog
+          image: catalog
           imagePullPolicy: Always
           name: catalog
           ports:
