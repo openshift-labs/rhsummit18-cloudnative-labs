@@ -2,7 +2,9 @@ package com.redhat.coolstore.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Spliterator;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,11 +38,12 @@ public class ProductEndpoint {
         //Get all the inventory and convert it to a Map.
         Map<String, Integer> inventoryMap = inventoryClient.getInventoryStatusForAll()
                 .stream()
-                .collect(Collectors.toMap((Inventory i) -> i.getItemId(), (Inventory i) -> i.getQuantity()));
+                .collect(Collectors.toMap(
+                  (Inventory i) -> i.getItemId(), (Inventory i) -> i.getQuantity())
+                );
 
-        products.stream().forEach(p -> p.setQuantity(inventoryMap.get(p.itemId));
-
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        products.stream().forEach(p -> p.setQuantity(inventoryMap.get(p.getItemId())));
+        return new ResponseEntity<List<Product>>(products,HttpStatus.OK);
     }
 
     @ResponseBody
