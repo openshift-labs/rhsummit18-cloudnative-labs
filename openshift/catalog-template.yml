@@ -126,6 +126,7 @@ objects:
       spring.datasource.password=${DB_PASSWORD}
       spring.datasource.driver-class-name=org.postgresql.Driver
       spring.jpa.hibernate.ddl-auto=create
+      ribbon.listOfServers=inventory:8080
 # Catalog Database
 - apiVersion: v1
   kind: DeploymentConfig
