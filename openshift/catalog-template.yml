@@ -31,7 +31,7 @@ objects:
       spec:
         containers:
         - env:
-            name: JAEGER_SERVICE_NAME
+          - name: JAEGER_SERVICE_NAME
             value: catalog
           image: catalog
           imagePullPolicy: Always
