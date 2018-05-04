@@ -99,18 +99,4 @@ public class ProductEndpointTest {
         List<String> names = productList.stream().map(p -> p.getName()).collect(Collectors.toList());
         assertThat(names).contains("Red Fedora","Forge Laptop Sticker","Oculus Rift");   
     }
-    
-    @Test
-    public void test_fallback() {
-        hoverflyRule.printSimulationData();
-        ResponseEntity<Product> response
-                = restTemplate.getForEntity("/services/product/444436", Product.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Product product = response.getBody();
-        assertThat(product)
-                .returns("444436",p -> p.getItemId())
-                .returns("Lytro Camera",p -> p.getName())
-                .returns(-1,p -> p.getQuantity())
-                .returns(44.30,p -> p.getPrice());
-    }
 }
