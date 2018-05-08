@@ -127,7 +127,6 @@
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!-- add kubernetes-config dependencies here -->
     <!-- Testing -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
